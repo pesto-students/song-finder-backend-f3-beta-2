@@ -18,5 +18,10 @@
   "bugs": {
     "url": "https://github.com/pesto-students/song-finder-backend-f3-beta-2/issues"
   },
-  "homepage": "https://github.com/pesto-students/song-finder-backend-f3-beta-2#readme"
+  "homepage": "https://github.com/pesto-students/song-finder-backend-f3-beta-2#readme",
+  "dependencies": {
+    "axios": "^0.24.0",
+    "dotenv": "^10.0.0",
+    "genius-lyrics-api": "^3.2.0"
+  }
 }
