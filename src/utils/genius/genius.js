@@ -2,7 +2,6 @@ const axios = require("axios").default;
 const { getSong } = require("genius-lyrics-api");
 require("dotenv/config");
 
-const query = "shape%20of%20you";
 const token = process.env["GENIUS_TOKEN"];
 
 async function get_search_result(query) {
@@ -45,3 +44,6 @@ async function get_lyrics(search_result) {
     const song = await getSong(options);
     return song.lyrics;
 }
+
+exports.get_search_result = get_search_result;
+exports.get_lyrics = get_lyrics;
