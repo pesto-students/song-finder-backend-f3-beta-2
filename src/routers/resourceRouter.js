@@ -2,7 +2,8 @@ const router = require("express").Router(),
     { getVideoId } = require("../utils/youtube/youtube"),
     { get_search_result, get_lyrics } = require("../utils/genius/genius"),
     { Auth } = require("../middlewares/auth"),
-    { User } = require("../models/userModel");
+    { User } = require("../models/userModel"),
+    { getSoundCloudUrl } = require("../utils/soundcloud");
 
 router.get("/search", async (req, res) => {
     const query = req.query;
@@ -40,6 +41,17 @@ router.get("/video", async (req, res) => {
     }
     const videoId = await getVideoId(q);
     return res.json({ videoId: videoId });
+});
+
+router.get("/audio", async (req, res) => {
+    const query = req.query;
+    const title = query.title;
+    const artist = query.artist;
+    if (!title || !artist) {
+        return res.json({});
+    }
+    const urlData = await getSoundCloudUrl({ title: title, artist: artist });
+    return res.json(urlData);
 });
 
 router.get("/searchHistory", Auth, async (req, res) => {
