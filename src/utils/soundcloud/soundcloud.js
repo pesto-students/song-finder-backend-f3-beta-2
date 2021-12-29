@@ -35,3 +35,5 @@ async function getSoundCloudUrl(info) {
         return false;
     }
 }
+
+exports.getSoundCloudUrl = getSoundCloudUrl;
