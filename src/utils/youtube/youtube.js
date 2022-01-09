@@ -12,3 +12,5 @@ async function getVideoId(query) {
         return { msg: err };
     }
 }
+
+exports.getVideoId = getVideoId;
