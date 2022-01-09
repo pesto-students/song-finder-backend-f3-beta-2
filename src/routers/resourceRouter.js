@@ -3,7 +3,7 @@ const router = require("express").Router(),
     { get_search_result, get_lyrics } = require("../utils/genius/genius"),
     { Auth } = require("../middlewares/auth"),
     { User } = require("../models/userModel"),
-    { getSoundCloudUrl } = require("../utils/soundcloud");
+    { getSoundCloudUrl } = require("../utils/soundcloud/soundcloud");
 
 router.get("/search", async (req, res) => {
     const query = req.query;
