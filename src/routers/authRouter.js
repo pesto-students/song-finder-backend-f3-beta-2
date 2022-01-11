@@ -1,7 +1,7 @@
 const router = require("express").Router();
-const { User } = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { User } = require("../models/userModel");
 
 router.post("/", async (req, res) => {
     const { firstName, lastName, email, password, confirmPassword } = req.body;
@@ -38,7 +38,7 @@ router.post("/", async (req, res) => {
         {
             user: savedUser._id
         },
-        process.env["JWT_SECRET"]
+        process.env.JWT_SECRET
     );
 
     return res
@@ -47,7 +47,7 @@ router.post("/", async (req, res) => {
             // secure: true,
             sameSite: "lax"
         })
-        .json({ firstName: firstName, lastName: lastName, email: email });
+        .json({ firstName, lastName, email });
 });
 
 router.post("/login", async (req, res) => {
@@ -74,7 +74,7 @@ router.post("/login", async (req, res) => {
         {
             user: existingUser._id
         },
-        process.env["JWT_SECRET"]
+        process.env.JWT_SECRET
     );
     return res
         .cookie("token", token, {
@@ -99,13 +99,13 @@ router.get("/logout", (req, res) => {
 });
 
 router.get("/loggedin", (req, res) => {
-    const cookies = req.cookies;
-    const token = cookies.token;
+    const { cookies } = req;
+    const { token } = cookies;
 
     if (!token) {
         return res.json(false);
     }
-    const verified = jwt.verify(token, process.env["JWT_SECRET"]);
+    const verified = jwt.verify(token, process.env.JWT_SECRET);
     if (!verified) {
         return res.json(false);
     }
