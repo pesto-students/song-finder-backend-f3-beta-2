@@ -20,6 +20,7 @@ async function getSearchResult(query) {
         data.response.hits.forEach((obj) => {
             if (obj.type === "song") {
                 listSearch.push({
+                    id: obj.result.id,
                     title: obj.result.title,
                     artist: obj.result.artist_names,
                     trackImage: obj.result.song_art_image_thumbnail_url,
