@@ -6,23 +6,33 @@ const { User } = require("../models/userModel");
 router.post("/", async (req, res) => {
     const { firstName, lastName, email, password, confirmPassword } = req.body;
     if (!firstName || !lastName || !email || !password || !confirmPassword) {
-        return res
-            .status(400)
-            .json({ msg: "Please provide all necessary fields." });
+        return res.status(400).json({
+            success: false,
+            message: "Please provide all necessary fields.",
+            data: {}
+        });
     }
     if (password.length < 8) {
         return res.status(400).json({
-            msg: "Password length has to be atleast of 8 characters"
+            success: false,
+            message: "Password length has to be atleast of 8 characters",
+            data: {}
         });
     }
     if (password !== confirmPassword) {
-        return res.status(400).json({ msg: "Password didn't match" });
+        return res.status(400).json({
+            success: false,
+            message: "Password didn't match",
+            data: {}
+        });
     }
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-        return res
-            .status(400)
-            .json({ msg: "User with this email id already exists" });
+        return res.json({
+            success: false,
+            message: "User with this email id already exists",
+            data: {}
+        });
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
@@ -44,22 +54,34 @@ router.post("/", async (req, res) => {
     return res
         .cookie("token", token, {
             httpOnly: true,
-            // secure: true,
+            secure: true,
             sameSite: "lax"
         })
-        .json({ firstName, lastName, email });
+        .json({
+            success: true,
+            message: "Successfully Registered",
+            data: { firstName, lastName, email }
+        });
 });
 
 router.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-        return res.status(400).json({ msg: "Email or Password is missing" });
+        return res.status(400).json({
+            success: false,
+            message: "Email or Password is missing",
+            data: {}
+        });
     }
 
     const existingUser = await User.findOne({ email });
     if (!existingUser) {
-        return res.status(404).json({ msg: "Wrong Email Id or Password" });
+        return res.json({
+            success: false,
+            message: "Wrong Email Id or Password",
+            data: {}
+        });
     }
 
     const matchPassword = await bcrypt.compare(
@@ -67,7 +89,11 @@ router.post("/login", async (req, res) => {
         existingUser.passwordHash
     );
     if (!matchPassword) {
-        return res.status(404).json({ msg: "Wrong Email Id or Password" });
+        return res.json({
+            success: false,
+            message: "Wrong Email Id or Password",
+            data: {}
+        });
     }
 
     const token = jwt.sign(
@@ -79,20 +105,24 @@ router.post("/login", async (req, res) => {
     return res
         .cookie("token", token, {
             httpOnly: true,
-            // secure: true,
+            secure: true,
             sameSite: "lax"
         })
         .json({
-            firstName: existingUser.firstName,
-            lastName: existingUser.lastName,
-            email: existingUser.email
+            success: true,
+            message: "User with this email id already exists",
+            data: {
+                firstName: existingUser.firstName,
+                lastName: existingUser.lastName,
+                email: existingUser.email
+            }
         });
 });
 
 router.get("/logout", (req, res) => {
     res.cookie("token", "", {
         httpOnly: true,
-        // secure: true,
+        secure: true,
         expires: new Date(0),
         sameSite: "lax"
     }).send();
