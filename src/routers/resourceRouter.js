@@ -25,12 +25,12 @@ router.get("/lyrics", async (req, res) => {
         return res.json({});
     }
 
-    const lyrics = await getLyrics({
+    const data = await getLyrics({
         title,
         artist
     });
 
-    return res.json({ lyrics });
+    return res.json(data);
 });
 
 router.get("/video", async (req, res) => {

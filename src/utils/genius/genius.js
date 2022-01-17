@@ -42,8 +42,10 @@ async function getLyrics(searchResult) {
     options.title = searchResult.title;
     options.artist = searchResult.artist;
     const song = await getSong(options);
-    return song.lyrics;
+    return { lyrics: song.lyrics, image: song.albumArt };
 }
+
+getLyrics({ title: "shape of you", artist: "ed sheeran" });
 
 exports.getSearchResult = getSearchResult;
 exports.getLyrics = getLyrics;

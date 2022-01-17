@@ -7,7 +7,7 @@ async function getSoundCloudUrl(info) {
     const userId = "704923-225181-486085-807554";
     const clientId = "yeF9B1vgNUGUL7AnyRADuHfrSo0Fr9Mm";
     const { title, artist } = info;
-    const query = [...title.split(" "), ...artist.split(" ")].join("%20");
+    const query = `${title} ${artist}`;
     const url = `https://api-v2.soundcloud.com/search?q=${query}&sc_a_id=${scAId}&variant_ids=2442&query_urn=${queryUrn}&facet=model&user_id=${userId}&client_id=${clientId}&limit=1&offset=0&linked_partitioning=1&app_version=1640084493&app_locale=en`;
 
     try {
@@ -30,7 +30,14 @@ async function getSoundCloudUrl(info) {
             body: null,
             method: "GET"
         });
-        return { url: resp.data.collection[0].permalink_url };
+        const track = resp.data.collection[0];
+        let perma;
+        if (track.kind === "playlist") {
+            perma = track.tracks[0].permalink_url;
+        } else {
+            perma = track.permalink_url;
+        }
+        return { url: perma };
     } catch (error) {
         return false;
     }
