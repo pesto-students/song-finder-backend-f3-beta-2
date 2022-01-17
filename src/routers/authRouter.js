@@ -110,7 +110,7 @@ router.post("/login", async (req, res) => {
         })
         .json({
             success: true,
-            message: "User with this email id already exists",
+            message: "Successfully Logged In",
             data: {
                 firstName: existingUser.firstName,
                 lastName: existingUser.lastName,
