@@ -11,7 +11,12 @@ require("dotenv/config");
 const app = express();
 const PORT = process.env.PORT || 5000;
 app.use(cookieParser());
-app.use(cors({ credentials: true }));
+app.use(
+    cors({
+        credentials: true,
+        origin: ["http://localhost:3000", "https://immersis.netlify.app"]
+    })
+);
 app.use(express.json());
 
 // Connect to Database
