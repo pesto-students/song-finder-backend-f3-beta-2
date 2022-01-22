@@ -20,6 +20,7 @@
         "no-console": "off",
         "prettier/prettier": "error",
         "func-names": "off",
-        "no-underscore-dangle": "off"
+        "no-underscore-dangle": "off",
+        "node/no-unsupported-features/es-syntax": "off"
     }
 }
