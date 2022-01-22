@@ -1,11 +1,11 @@
 const router = require("express").Router();
 const { getVideoId } = require("../utils/youtube/youtube");
 const { getSearchResult, getLyrics } = require("../utils/genius/genius");
-const { Auth } = require("../middlewares/auth");
+const { Auth, SaveSearch } = require("../middlewares/auth");
 const { User } = require("../models/userModel");
 const { getSoundCloudUrl } = require("../utils/soundcloud/soundcloud");
 
-router.get("/search", async (req, res) => {
+router.get("/search", SaveSearch, async (req, res) => {
     const { query } = req;
     const { q } = query;
     if (!q) {
@@ -57,8 +57,11 @@ router.get("/audio", async (req, res) => {
 router.get("/searchHistory", Auth, async (req, res) => {
     const _id = req.user;
     const user = await User.findOne({ _id });
-    const history = user.searchHistory;
-    return res.json({ searchHistory: history });
+    const history = user.get("searchHistory", { strict: false });
+    return res.json({
+        success: true,
+        searchHistory: history ? Object.keys(history) : []
+    });
 });
 
 exports.ResourceRouter = router;
