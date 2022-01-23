@@ -21,6 +21,7 @@
         "prettier/prettier": "error",
         "func-names": "off",
         "no-underscore-dangle": "off",
-        "node/no-unsupported-features/es-syntax": "off"
+        "node/no-unsupported-features/es-syntax": "off",
+        "node/no-unpublished-require": "off"
     }
 }
