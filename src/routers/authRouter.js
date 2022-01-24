@@ -159,12 +159,12 @@ router.post("/forgot", async (req, res) => {
     try {
         await SendEmail({ email, token, expiry });
         return res.json({
-            succes: true,
+            success: true,
             message: "Password Reset Email has been sent"
         });
     } catch (err) {
         return res.json({
-            succes: false,
+            success: false,
             message: err.message
         });
     }
