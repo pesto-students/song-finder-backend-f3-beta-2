@@ -1,7 +1,9 @@
 const router = require("express").Router();
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const { User } = require("../models/userModel");
+const { SendEmail } = require("../utils/sendEmail/sendEmail");
 
 router.post("/", async (req, res) => {
     const { firstName, lastName, email, password, confirmPassword } = req.body;
@@ -138,6 +140,81 @@ router.get("/loggedin", (req, res) => {
     }
 
     return res.json(true);
+});
+
+router.post("/forgot", async (req, res) => {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+        return res.json({
+            succes: false,
+            message: "User with this email address doesn't exist"
+        });
+    }
+    const randomBytes = crypto.randomBytes(20);
+    const token = randomBytes.toString("hex");
+    const expiry = Date.now() + 3600000;
+
+    await User.updateOne({ email }, { resetToken: token, resetExpire: expiry });
+    try {
+        await SendEmail({ email, token, expiry });
+        return res.json({
+            succes: true,
+            message: "Password Reset Email has been sent"
+        });
+    } catch (err) {
+        return res.json({
+            succes: false,
+            message: err.message
+        });
+    }
+});
+
+router.post("/reset/:token", async (req, res) => {
+    const { password, confirmPassword } = req.body;
+    const user = await User.findOne({
+        resetToken: req.params.token,
+        resetExpire: { $gt: Date.now() }
+    });
+
+    if (!user) {
+        return res.json({
+            success: false,
+            message: "Reset link is invalid or expired. Generate a new one."
+        });
+    }
+
+    if (password.length < 8) {
+        return res.status(400).json({
+            success: false,
+            message: "Password length has to be atleast of 8 characters"
+        });
+    }
+
+    if (password !== confirmPassword) {
+        return res.status(400).json({
+            success: false,
+            message: "Password didn't match"
+        });
+    }
+    const passwordHash = await bcrypt.hash(password, 10);
+    user.passwordHash = passwordHash;
+    user.resetToken = undefined;
+    user.resetExpire = undefined;
+
+    try {
+        await user.save();
+        return res.json({
+            success: true,
+            message:
+                "Password has been successfully reset. Please log in to continue."
+        });
+    } catch (err) {
+        return res.json({
+            success: false,
+            message: "Couldn't reset password. Please try again."
+        });
+    }
 });
 
 exports.AuthRouter = router;
