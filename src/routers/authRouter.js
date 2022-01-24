@@ -8,21 +8,21 @@ const { SendEmail } = require("../utils/sendEmail/sendEmail");
 router.post("/", async (req, res) => {
     const { firstName, lastName, email, password, confirmPassword } = req.body;
     if (!firstName || !lastName || !email || !password || !confirmPassword) {
-        return res.status(400).json({
+        return res.status(200).json({
             success: false,
             message: "Please provide all necessary fields.",
             data: {}
         });
     }
     if (password.length < 8) {
-        return res.status(400).json({
+        return res.status(200).json({
             success: false,
             message: "Password length has to be atleast of 8 characters",
             data: {}
         });
     }
     if (password !== confirmPassword) {
-        return res.status(400).json({
+        return res.status(200).json({
             success: false,
             message: "Password didn't match",
             data: {}
@@ -69,7 +69,7 @@ router.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-        return res.status(400).json({
+        return res.status(200).json({
             success: false,
             message: "Email or Password is missing",
             data: {}
@@ -185,14 +185,14 @@ router.post("/reset/:token", async (req, res) => {
     }
 
     if (password.length < 8) {
-        return res.status(400).json({
+        return res.status(200).json({
             success: false,
             message: "Password length has to be atleast of 8 characters"
         });
     }
 
     if (password !== confirmPassword) {
-        return res.status(400).json({
+        return res.status(200).json({
             success: false,
             message: "Password didn't match"
         });
