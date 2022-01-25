@@ -126,12 +126,16 @@ router.get("/loggedin", (req, res) => {
     if (!token) {
         return res.json(false);
     }
-    const verified = jwt.verify(token, process.env.JWT_SECRET);
-    if (!verified) {
+    try {
+        const verified = jwt.verify(token, process.env.JWT_SECRET);
+        if (!verified) {
+            return res.json(false);
+        }
+
+        return res.json(true);
+    } catch (err) {
         return res.json(false);
     }
-
-    return res.json(true);
 });
 
 router.post("/forgot", async (req, res) => {
