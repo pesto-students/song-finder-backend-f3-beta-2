@@ -53,7 +53,7 @@ router.post("/", async (req, res) => {
         process.env.JWT_SECRET
     );
 
-    return res.json({
+    return res.cookie("token", token, { secure: true, sameSite: "none" }).json({
         success: true,
         message: "Successfully Registered",
         data: { firstName, lastName, email },
@@ -99,7 +99,7 @@ router.post("/login", async (req, res) => {
         },
         process.env.JWT_SECRET
     );
-    return res.json({
+    return res.cookie("token", token, { secure: true, sameSite: "none" }).json({
         success: true,
         message: "Successfully Logged In",
         data: {
