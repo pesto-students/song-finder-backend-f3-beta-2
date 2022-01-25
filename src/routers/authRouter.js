@@ -53,17 +53,12 @@ router.post("/", async (req, res) => {
         process.env.JWT_SECRET
     );
 
-    return res
-        .cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "none"
-        })
-        .json({
-            success: true,
-            message: "Successfully Registered",
-            data: { firstName, lastName, email }
-        });
+    return res.json({
+        success: true,
+        message: "Successfully Registered",
+        data: { firstName, lastName, email },
+        token
+    });
 });
 
 router.post("/login", async (req, res) => {
@@ -104,26 +99,20 @@ router.post("/login", async (req, res) => {
         },
         process.env.JWT_SECRET
     );
-    return res
-        .cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "none"
-        })
-        .json({
-            success: true,
-            message: "Successfully Logged In",
-            data: {
-                firstName: existingUser.firstName,
-                lastName: existingUser.lastName,
-                email: existingUser.email
-            }
-        });
+    return res.json({
+        success: true,
+        message: "Successfully Logged In",
+        data: {
+            firstName: existingUser.firstName,
+            lastName: existingUser.lastName,
+            email: existingUser.email
+        },
+        token
+    });
 });
 
 router.get("/logout", (req, res) => {
     res.cookie("token", "", {
-        httpOnly: true,
         secure: true,
         expires: new Date(0),
         sameSite: "none"
