@@ -123,6 +123,14 @@ and how to install them.
 
 -   Harshit Kedia
 
+## **Resources**
+
+-   [PRD](https://drive.google.com/file/d/1ncPG_30GHJTbWQtCLLYm1pCUBMU1UOIQ/view?usp=sharing)
+
+-   [Wireframes](https://drive.google.com/file/d/1exO60-g4It1k5m_aaqjNBaskljzBF8DC/view?usp=sharing)
+
+-   [HLD](https://drive.google.com/file/d/1zissH9ox920o-y86EdtfzJNawBMfDD44/view?usp=sharing)
+
 ## **UI Screens**
 
 ### Landing Page
