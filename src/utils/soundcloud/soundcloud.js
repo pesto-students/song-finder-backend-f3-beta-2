@@ -25,7 +25,8 @@ async function getSoundCloudUrl(info) {
                 "sec-fetch-mode": "cors",
                 "sec-fetch-site": "same-site",
                 Referer: "https://soundcloud.com/",
-                "Referrer-Policy": "origin"
+                "Referrer-Policy": "origin",
+                Authorization: "OAuth 2-290059-285911183-DiMTYAwx0iSAeJ"
             },
             body: null,
             method: "GET"

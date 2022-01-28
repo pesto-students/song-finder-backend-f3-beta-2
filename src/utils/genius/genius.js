@@ -8,14 +8,15 @@ async function getSearchResult(query) {
     const listSearch = [];
     const urlRaw = "https://api.genius.com/search?q=";
     const url = urlRaw + query;
-    const resp = await axios({
-        method: "GET",
-        url,
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    });
-    if (resp.status === 200) {
+    try {
+        const resp = await axios({
+            method: "GET",
+            url,
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
         const { data } = resp;
         data.response.hits.forEach((obj) => {
             if (obj.type === "song") {
@@ -30,8 +31,10 @@ async function getSearchResult(query) {
                 });
             }
         });
+        return listSearch.length ? listSearch : false;
+    } catch (err) {
+        return false;
     }
-    return listSearch;
 }
 
 async function getLyrics(searchResult) {
@@ -41,8 +44,12 @@ async function getLyrics(searchResult) {
     };
     options.title = searchResult.title;
     options.artist = searchResult.artist;
-    const song = await getSong(options);
-    return { lyrics: song.lyrics, image: song.albumArt };
+    try {
+        const song = await getSong(options);
+        return { lyrics: song.lyrics, image: song.albumArt };
+    } catch (err) {
+        return false;
+    }
 }
 
 exports.getSearchResult = getSearchResult;

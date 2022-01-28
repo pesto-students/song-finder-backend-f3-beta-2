@@ -10,7 +10,20 @@ function Auth(req, res, next) {
             .json({ success: false, message: "You are not Authorized!" });
     }
 
-    const verified = jwt.verify(token, process.env.JWT_SECRET);
+    let verified;
+
+    try {
+        verified = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+        return res
+            .cookie("token", "", {
+                secure: true,
+                expires: new Date(0),
+                sameSite: "none"
+            })
+            .send();
+    }
+
     if (!verified) {
         return res
             .status(200)
@@ -27,7 +40,19 @@ async function SaveSearch(req, res, next) {
         return next();
     }
 
-    const verified = jwt.verify(token, process.env.JWT_SECRET);
+    let verified;
+
+    try {
+        verified = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+        res.cookie("token", "", {
+            secure: true,
+            expires: new Date(0),
+            sameSite: "none"
+        }).send();
+        return next();
+    }
+
     if (!verified) {
         return next();
     }
