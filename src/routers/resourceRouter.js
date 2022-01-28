@@ -9,11 +9,11 @@ router.get("/search", SaveSearch, async (req, res) => {
     const { query } = req;
     const { q } = query;
     if (!q) {
-        return res.json({});
+        return res.json({ data: false });
     }
 
-    const results = await getSearchResult(q);
-    return res.json({ results });
+    const data = await getSearchResult(q);
+    return res.json({ data });
 });
 
 router.get("/lyrics", async (req, res) => {
@@ -22,7 +22,7 @@ router.get("/lyrics", async (req, res) => {
     const { artist } = query;
 
     if (!title || !artist) {
-        return res.json({});
+        return res.json({ data: false });
     }
 
     const data = await getLyrics({
@@ -30,17 +30,17 @@ router.get("/lyrics", async (req, res) => {
         artist
     });
 
-    return res.json(data);
+    return res.json({ data });
 });
 
 router.get("/video", async (req, res) => {
     const { query } = req;
     const { q } = query;
     if (!q) {
-        return res.json({});
+        return res.json({ data: false });
     }
     const videoId = await getVideoId(q);
-    return res.json({ videoId });
+    return res.json({ data: videoId });
 });
 
 router.get("/audio", async (req, res) => {
@@ -48,10 +48,10 @@ router.get("/audio", async (req, res) => {
     const { title } = query;
     const { artist } = query;
     if (!title || !artist) {
-        return res.json({});
+        return res.json({ data: false });
     }
     const urlData = await getSoundCloudUrl({ title, artist });
-    return res.json(urlData);
+    return res.json({ data: urlData });
 });
 
 router.get("/searchHistory", Auth, async (req, res) => {

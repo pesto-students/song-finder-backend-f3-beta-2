@@ -9,7 +9,7 @@ async function getVideoId(query) {
         const data = result.content[0].videoId;
         return { videoId: data };
     } catch (err) {
-        return { msg: err };
+        return false;
     }
 }
 
