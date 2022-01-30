@@ -4,6 +4,7 @@ const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const { User } = require("../models/userModel");
 const { SendEmail } = require("../utils/sendEmail/sendEmail");
+const logger = require("../logging/logging");
 
 router.post("/", async (req, res) => {
     const { firstName, lastName, email, password, confirmPassword } = req.body;
@@ -28,7 +29,13 @@ router.post("/", async (req, res) => {
             data: {}
         });
     }
-    const existingUser = await User.findOne({ email });
+    let existingUser;
+    try {
+        existingUser = await User.findOne({ email });
+    } catch (err) {
+        logger.error(err);
+    }
+
     if (existingUser) {
         return res.json({
             success: false,
@@ -44,7 +51,12 @@ router.post("/", async (req, res) => {
         email,
         passwordHash
     });
-    const savedUser = await newUser.save();
+    let savedUser;
+    try {
+        savedUser = await newUser.save();
+    } catch (err) {
+        logger.error(err);
+    }
 
     const token = jwt.sign(
         {
@@ -72,7 +84,13 @@ router.post("/login", async (req, res) => {
         });
     }
 
-    const existingUser = await User.findOne({ email });
+    let existingUser;
+    try {
+        existingUser = await User.findOne({ email });
+    } catch (err) {
+        logger.error(err);
+    }
+
     if (!existingUser) {
         return res.json({
             success: false,
@@ -134,13 +152,20 @@ router.get("/loggedin", (req, res) => {
 
         return res.json(true);
     } catch (err) {
+        logger.error(err);
         return res.json(false);
     }
 });
 
 router.post("/forgot", async (req, res) => {
     const { email } = req.body;
-    const user = await User.findOne({ email });
+    let user;
+    try {
+        user = await User.findOne({ email });
+    } catch (err) {
+        logger.error(err);
+    }
+
     if (!user) {
         return res.json({
             succes: false,
@@ -151,7 +176,15 @@ router.post("/forgot", async (req, res) => {
     const token = randomBytes.toString("hex");
     const expiry = Date.now() + 3600000;
 
-    await User.updateOne({ email }, { resetToken: token, resetExpire: expiry });
+    try {
+        await User.updateOne(
+            { email },
+            { resetToken: token, resetExpire: expiry }
+        );
+    } catch (err) {
+        logger.error(err);
+    }
+
     try {
         await SendEmail({ email, token, expiry });
         return res.json({
@@ -159,6 +192,7 @@ router.post("/forgot", async (req, res) => {
             message: "Password Reset Email has been sent"
         });
     } catch (err) {
+        logger.error(err);
         return res.json({
             success: false,
             message: err.message
@@ -168,10 +202,15 @@ router.post("/forgot", async (req, res) => {
 
 router.post("/reset/:token", async (req, res) => {
     const { password, confirmPassword } = req.body;
-    const user = await User.findOne({
-        resetToken: req.params.token,
-        resetExpire: { $gt: Date.now() }
-    });
+    let user;
+    try {
+        user = await User.findOne({
+            resetToken: req.params.token,
+            resetExpire: { $gt: Date.now() }
+        });
+    } catch (err) {
+        logger.error(err);
+    }
 
     if (!user) {
         return res.json({
@@ -206,6 +245,7 @@ router.post("/reset/:token", async (req, res) => {
                 "Password has been successfully reset. Please log in to continue."
         });
     } catch (err) {
+        logger.error(err);
         return res.json({
             success: false,
             message: "Couldn't reset password. Please try again."

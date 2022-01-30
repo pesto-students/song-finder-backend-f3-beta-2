@@ -1,4 +1,5 @@
 const axios = require("axios");
+const logger = require("../../logging/logging");
 
 async function getSoundCloudUrl(info) {
     const scAId = "879ee6e6d6dc84d0e74b27a20d55030ab6a3a0cc";
@@ -40,6 +41,7 @@ async function getSoundCloudUrl(info) {
         }
         return { url: perma };
     } catch (error) {
+        logger.error(error);
         return false;
     }
 }

@@ -1,4 +1,5 @@
 const YoutubeMusicApi = require("youtube-music-api");
+const logger = require("../../logging/logging");
 
 const ytm = new YoutubeMusicApi();
 
@@ -9,6 +10,7 @@ async function getVideoId(query) {
         const data = result.content[0].videoId;
         return { videoId: data };
     } catch (err) {
+        logger.error(err);
         return false;
     }
 }

@@ -1,5 +1,6 @@
 const axios = require("axios").default;
 const { getSong } = require("genius-lyrics-api");
+const logger = require("../../logging/logging");
 require("dotenv/config");
 
 const token = process.env.GENIUS_TOKEN;
@@ -33,6 +34,7 @@ async function getSearchResult(query) {
         });
         return listSearch.length ? listSearch : false;
     } catch (err) {
+        logger.error(err);
         return false;
     }
 }
@@ -48,6 +50,7 @@ async function getLyrics(searchResult) {
         const song = await getSong(options);
         return { lyrics: song.lyrics, image: song.albumArt };
     } catch (err) {
+        logger.error(err);
         return false;
     }
 }
